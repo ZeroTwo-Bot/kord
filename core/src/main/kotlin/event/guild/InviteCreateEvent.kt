@@ -57,7 +57,7 @@ class InviteCreateEvent(
     /**
      * The [Guild] of the invite.
      */
-    override val guildId: Snowflake? get() = data.guildId.value
+    val guildId: Snowflake? get() = data.guildId.value
 
     /**
      * The behavior of the [Guild] of the invite.

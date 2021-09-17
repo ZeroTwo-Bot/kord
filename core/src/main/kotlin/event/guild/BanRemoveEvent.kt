@@ -12,7 +12,7 @@ import dev.kord.core.supplier.EntitySupplyStrategy
 
 class BanRemoveEvent(
     val user: User,
-    override val guildId: Snowflake,
+    val guildId: Snowflake,
     override val shard: Int,
     override val supplier: EntitySupplier = user.kord.defaultSupplier
 ) : Event, Strategizable {

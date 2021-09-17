@@ -19,7 +19,7 @@ class ReactionRemoveEvent(
     val userId: Snowflake,
     val channelId: Snowflake,
     val messageId: Snowflake,
-    override val guildId: Snowflake?,
+    val guildId: Snowflake?,
     val emoji: ReactionEmoji,
     override val kord: Kord,
     override val shard: Int,

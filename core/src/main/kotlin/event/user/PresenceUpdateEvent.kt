@@ -15,7 +15,7 @@ import dev.kord.core.supplier.EntitySupplyStrategy
 class PresenceUpdateEvent(
     val oldUser: User?,
     val user: DiscordPresenceUser,
-    override val guildId: Snowflake,
+    val guildId: Snowflake,
     val old: Presence?,
     val presence: Presence,
     override val shard: Int,

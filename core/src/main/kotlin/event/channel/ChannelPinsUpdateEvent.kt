@@ -24,7 +24,7 @@ class ChannelPinsUpdateEvent(
 
     val channelId: Snowflake get() = data.channelId
 
-    override val guildId: Snowflake? get() = data.guildId.value
+    val guildId: Snowflake? get() = data.guildId.value
 
     val lastPinTimestamp: Instant? get() = data.lastPinTimestamp.value?.toInstant()
 

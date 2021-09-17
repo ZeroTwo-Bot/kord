@@ -14,7 +14,7 @@ import dev.kord.core.entity.channel.DmChannel
 
 class MessageCreateEvent(
     val message: Message,
-    override val guildId: Snowflake?,
+    val guildId: Snowflake?,
     val member: Member?,
     override val shard: Int,
     override val supplier: EntitySupplier = message.kord.defaultSupplier

@@ -11,7 +11,7 @@ import dev.kord.core.supplier.EntitySupplier
 import dev.kord.core.supplier.EntitySupplyStrategy
 
 class EmojisUpdateEvent(
-    override val guildId: Snowflake,
+    val guildId: Snowflake,
     val emojis: Set<GuildEmoji>,
     override val kord: Kord,
     override val shard: Int,

@@ -21,9 +21,6 @@ class MessageUpdateEvent(
     override val supplier: EntitySupplier = kord.defaultSupplier
 ) : Event, Strategizable {
 
-    override val guildId: Snowflake?
-        get() = new.guildId.value
-
     /**
      * The behavior of the message that was updated.
      */

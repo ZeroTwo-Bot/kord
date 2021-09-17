@@ -1,6 +1,5 @@
 package dev.kord.core.event.channel
 
-import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.entity.channel.*
 import dev.kord.core.entity.channel.thread.NewsChannelThread
@@ -9,8 +8,6 @@ import dev.kord.core.event.Event
 
 interface ChannelCreateEvent : Event {
     val channel: Channel
-    override val guildId: Snowflake?
-        get() = channel.data.guildId.value
     override val kord: Kord
         get() = channel.kord
 }

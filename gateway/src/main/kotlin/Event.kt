@@ -1,6 +1,5 @@
 package dev.kord.gateway
 
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.entity.*
 import dev.kord.common.entity.optional.Optional
 import dev.kord.common.entity.optional.OptionalBoolean
@@ -37,7 +36,7 @@ private object NullDecoder : DeserializationStrategy<Nothing?> {
 }
 
 sealed class Event {
-    companion object : DeserializationStrategy<Event?> {
+    companion object : KSerializer<Event?> {
         override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Event") {
             element("op", OpCode.descriptor)
             element("t", String.serializer().descriptor, isOptional = true)
@@ -423,6 +422,10 @@ sealed class Event {
                     null
                 }
             }
+
+        override fun serialize(encoder: Encoder, value: Event?) {
+            TODO("Not yet implemented")
+        }
 
     }
 

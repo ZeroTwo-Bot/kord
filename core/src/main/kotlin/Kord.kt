@@ -3,7 +3,6 @@ package dev.kord.core
 import dev.kord.cache.api.DataCache
 import dev.kord.common.annotation.DeprecatedSinceKord
 import dev.kord.common.annotation.KordExperimental
-import dev.kord.common.annotation.KordPreview
 import dev.kord.common.annotation.KordUnsafe
 import dev.kord.common.entity.DiscordShard
 import dev.kord.common.entity.PresenceStatus
@@ -22,6 +21,7 @@ import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.core.exception.KordInitializationException
 import dev.kord.core.gateway.MasterGateway
 import dev.kord.core.gateway.handler.GatewayEventInterceptor
+import dev.kord.core.gateway.start
 import dev.kord.core.supplier.*
 import dev.kord.gateway.Gateway
 import dev.kord.gateway.builder.PresenceBuilder
@@ -53,6 +53,7 @@ class Kord(
     val selfId: Snowflake,
     private val eventFlow: MutableSharedFlow<Event>,
     dispatcher: CoroutineDispatcher,
+    val extraContext: (Event.() -> CoroutineContext)? = null
 ) : CoroutineScope {
     private val interceptor = GatewayEventInterceptor(this, gateway, cache, eventFlow)
 
@@ -596,6 +597,9 @@ suspend inline fun Kord(token: String, builder: KordBuilder.() -> Unit = {}): Ko
 inline fun <reified T : Event> Kord.on(scope: CoroutineScope = this, noinline consumer: suspend T.() -> Unit): Job =
     events.buffer(CoroutineChannel.UNLIMITED).filterIsInstance<T>()
         .onEach {
-            scope.launch { runCatching { consumer(it) }.onFailure { kordLogger.catching(it) } }
+            val context = extraContext
+                ?.let { builder -> scope.coroutineContext + builder.invoke(it) }
+                ?: scope.coroutineContext
+            scope.launch(context) { runCatching { consumer(it) }.onFailure { kordLogger.catching(it) } }
         }
         .launchIn(scope)

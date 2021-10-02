@@ -46,6 +46,17 @@ data class Role(
     override suspend fun asRoleOrNull(): Role = this
 
     /**
+     * Checks whether a [Role] can interact with another [Role] by comparing their [rawPosition]s.
+     *
+     * Throws an [IllegalArgumentException] when the roles are not from the same guild.
+     */
+    fun canInteract(role: Role): Boolean {
+        if (role.guildId != guildId)
+            throw IllegalArgumentException("canInteract can only be called within the same guild!")
+        return role.rawPosition < rawPosition
+    }
+
+    /**
      * The tags of this role, if present.
      */
     val tags: RoleTags? get() = data.tags.unwrap { RoleTags(it, guildId, kord) }

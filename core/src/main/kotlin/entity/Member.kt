@@ -112,6 +112,48 @@ class Member(
     }
 
     /**
+     * Checks if this [Member] can interact (delete/edit/assign/..) with the specified [Role].
+     *
+     * This checks if the [Member] has any role which is higher in hierarchy than [Role].
+     * The logic also accounts for [Guild] ownership.
+     *
+     * Throws an [IllegalArgumentException] if the role is from a different guild.
+     */
+    suspend fun canInteract(role: Role): Boolean {
+        val guild = getGuild()
+        if (guild.ownerId == this.id) return true
+        val highestRole = roles.toList()
+            .asSequence()
+            .sortedBy { it.rawPosition }
+            .firstOrNull() ?: guild.getEveryoneRole()
+        return highestRole.canInteract(role)
+    }
+
+    /**
+     * Checks if this [Member] can interact (kick/ban/..) with another [Member]
+     *
+     * This checks if the [Member] has any role which is higher in hierarchy than all [Role]s of the
+     * specified [Member]
+     * The logic also accounts for [Guild] ownership
+     *
+     * Throws an [IllegalArgumentException] if the member is from a different guild.
+     */
+    suspend fun canInteract(member: Member): Boolean {
+        val guild = getGuild()
+        if (isOwner()) return true
+        if (member.isOwner()) return false
+        val highestRole = roles.toList()
+            .asSequence()
+            .sortedBy { it.rawPosition }
+            .firstOrNull() ?: guild.getEveryoneRole()
+        val otherHighestRole = member.roles.toList()
+            .asSequence()
+            .sortedBy { it.rawPosition }
+            .firstOrNull() ?: guild.getEveryoneRole()
+        return highestRole.canInteract(otherHighestRole)
+    }
+
+    /**
      * Returns a new [Member] with the given [strategy].
      */
     override fun withStrategy(strategy: EntitySupplyStrategy<*>): Member =
